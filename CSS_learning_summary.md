@@ -107,8 +107,6 @@ h1是选择器，大括号里面是声明，由属性和值组成。
   }
   ```
 
-  ![1525485957033](C:\Users\LIGHTN~1\AppData\Local\Temp\1525485957033.png)
-
 - 伪类选择器
 
 ```css
@@ -181,13 +179,42 @@ a:link:hover {color: red;}
 a:visited:hover {color: maroon;}
 ```
 
-
-
 - 伪元素选择器
 
+**设置首字母样式**
 
+```css
+p:first-letter {color: red;}
+```
 
+```css
+h2:first-letter {font-size: 200%;}
+```
 
+**设置第一行的样式**
+
+```css
+p:first-line {color: purple;}
+```
+
+所有伪元素都必须放在出现该伪元素的选择器的最后面。
+
+**设置之前和之后元素的样式**
+
+在每个`h2`元素前加一对银色中括号：
+
+```css
+h2:before {
+    content: "]]";
+    color: silver;
+}
+```
+
+在文档的最后用一个适当的结束语结束：
+
+```css
+body:after {content:" The End.";}
+```
 
 - 属性选择器
 
@@ -369,8 +396,6 @@ table-layout：设置表格的布局算法
 
 ### 单位
 
-![1525499613160](C:\Users\LIGHTN~1\AppData\Local\Temp\1525499613160.png)
-
 **px**: 像素，用于屏幕显示器上，传统上一个像素对应于计算机屏幕上的一个点。
 
 **%**: 百分比。相对于父元素。
@@ -379,7 +404,7 @@ table-layout：设置表格的布局算法
 
 **em**: 
 
-对于font-size, 1em等于父元素设置的字体大小。父级元素没有设置会一直网上找，如果都没有就参照浏览器默认大小。
+对于font-size, 1em等于父元素设置的字体大小。父级元素没有设置会一直往上找，如果都没有就参照浏览器默认大小。
 
 对于其他属性（border, width, height, padding, margin, line-height），参照该元素的font-size.
 
@@ -475,17 +500,79 @@ overflow 规定元素溢出父容器时的展现形式，取值有auto, hidden�
 
 
 
-### 样式的继承与层叠
 
-元素声明的样式>浏览器默认样式>继承自父元素的样式
 
 
 
 ### 样式优先级
 
-![1525505817530](C:\Users\LIGHTN~1\AppData\Local\Temp\1525505817530.png)
+**选择器的特殊性(specificity)**
 
-!important是最高级别
+初始都是`0,0,0,0`
+
+* 对于选择器中给定的各个ID属性值，加`0,1,0,0`
+* 对于选择器中给定的各个类属性值、属性选择或伪类，加`0,0,1,0`
+* 对于选择器中给定的各个元素和伪元素，加`0,0,0,1`
+
+```css
+h1 {color: red;} /*0,0,0,1*/
+body h1 {color: green;} /*0,0,0,2 (winner)*/
+
+h2.grape {color: purple;} /*0,0,1,1 (winner)*/
+h2 {color: silver;} /*0,0,0,1*/
+
+html>body table tr[id="totals"] td ul>li {color: maroon;} /*0,0,1,7*/
+li#answer {color: navy;} /*0,1,0,1 (winner)*/
+```
+
+* 每个内联声明的特殊性都是`1,0,0,0`
+* `!important`是最高级别
+
+```css
+p.dark {color: #333 !important; background: white !important;}
+```
+
+
+
+### 样式的继承与层叠
+
+元素声明的样式>浏览器默认样式>继承自父元素的样式
+
+基于继承机制，样式不仅应用到指定的元素，还会应用到它的后代元素。
+
+有些属性不能继承，如属性`border`就不会继承。大多数框模型属性（包括margin, padding, background, border）都不能继承。
+
+```css
+p {color: gray !important;}
+
+<p style="color: black;">Well, <em>hello</em> there!</p>
+```
+
+↑有`!important`标志的规则胜出，所以段落为灰色。`em`元素也会继承这个灰色。
+
+权重和来源：
+
+1. 读者的重要声明
+2. 创作人员的重要声明
+3. 创作人员的正常声明
+4. 读者的正常声明
+5. 用户代理声明
+
+在样式表后面出现的胜出。
+
+```css
+h1 {color: red;}
+h1 {color: blue;} /*winner*/
+```
+
+文档中包含的规则比导入的规则权重高。
+
+```css
+p em {color: purple;} /*from imported style sheet*/
+p em {color: gray;} /*rule contained within the document (winner)*/
+```
+
+
 
 
 
