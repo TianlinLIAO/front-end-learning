@@ -410,7 +410,7 @@ table-layout：设置表格的布局算法
 
 em不建议使用。
 
-```
+```css
 p {
  font-size: 14px;
  width: 20em; /* 20em = 20*14px */
@@ -454,9 +454,6 @@ div {
 ```
 
 **单位运算**：使用 calc 来进行单位运算 
-```
-
-```
 
 注：chrome 浏览器最小的字体为 12px，如果设置 10px 也会渲染成 12px  
 
@@ -476,15 +473,129 @@ div {
 
 - 十六进制
 
+### 字体
+
+* font-family
+
+通用字体系列：`Serif`, `Sans-serif`, `monospace`, `cursive`, `fantasy`
+
+理论上用户安装的任何字体系列都会落入到上述某种通用系列当中。
+
+```css
+p {font-family: Times, TimesNR, 'New Century Schoolbook', Georgia, 'New York', serif;}
+```
+
+用户代理会按所列的顺序查找这些字体。如果列出的字体都不可用，就会简单地选择一种可用的`serif`字体。
+
+只有当一个字体名中有一个或多个空格，或者如果字体名包含#或$之类的符号，才需要在声明中加引号。
+
+* font-weight
+
+值：normal | bold | bolder | lighter| 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 | inherit
+
+100-900本身并没有固有的加粗度。每一个数对应的加粗度至少与前一个数指定的加粗度相同。100、200、300、400可能都映射到同样的较细变形；500和600可能对应到同样的较粗字体变形；而700、800、900可能都生成同样的很粗的字体变形。
+
+* font-size
+
+```css
+p {font-size: 12px;}
+em {font-size: 120%;}
+strong {font-size: 135%;}
+```
+
+```html
+<p><em>14.4px </em><strong>19.44px </strong>12px</p>
+```
+
+* font-style
+
+值：italic | oblique | normal | inherit
+
+* font-variant
+
+值：small-caps | normal | inherit
+
+### 文本
+
+* text-indent 首行缩进
+
+* text-align 水平对齐
+
+只应用于块级元素。
+
+`left`: 左对齐
+
+`center`: 居中对齐
+
+`right`: 右对齐
+
+`justify`: 两端对齐
+
+* line-height 行间距
+
+* vertical-align
+
+只应用于行内元素和替换元素。
+
+`baseline`: 要求一个元素的基线与其父元素
+
+`sub`: 下标
+
+`sup`: 上标
+
+`bottom`: 将元素行内框的底端与行框的底端对齐。
+
+`text-bottom`
+
+`top`: 顶端对齐
+
+`text-top`
+
+`middle`
+
+百分数：把元素的基线相对于父元素的基线升高或降低指定的量。正百分数值会使元素升高，负值则会使其降低。
+
+长度：把一个元素升高或降低指定的距离。正长度值使元素上升，负元素值使元素下降。
+
+* word-spacing
+* letter-spacing
+* text-transformation: uppercase | lowercase | capitalize | none | inherit
+* text-decoration
+* text-shadow
+
+每个阴影都由一个颜色和3个长度值来定义。颜色是阴影的颜色。前2个长度值确定了阴影与文本的偏移距离，第三个长度值可选，定义了阴影的“模糊半径”。
+
+定义一个相对于文本向右偏移5像素、向下偏移0.5em的绿色阴影，而且不模糊，可以写作：
+
+```css
+text-shadow: green 5px 0.5em;
+```
+
+负长度值会使阴影落在原文本的左上方。
+
+* white-space
+
+`normal`: 去掉多余的空白符。换行字符（回车）会转换为空格，一行中多个空格的序列也会转换为一个空格。
+
+`pre`: 空白符不会被忽略
+
+`nowrap`: 它会防止元素中的文本换行，除非使用了一个br元素。
+
+| 值       | 空白符 | 换行符 | 自动换行 |
+| -------- | ------ | ------ | -------- |
+| pre-line | 合并   | 保留   | 允许     |
+| normal   | 合并   | 忽略   | 允许     |
+| nowrap   | 合并   | 忽略   | 不允许   |
+| pre      | 保留   | 保留   | 不允许   |
+| pre-wrap | 保留   | 保留   | 允许     |
+
+* direction 文本方向
+
+
+
 ### 盒模型
 
-![1525501552719](C:\Users\LIGHTN~1\AppData\Local\Temp\1525501552719.png)
-
 默认情况下，实际内容宽高为设置的width和height，但是如果设置了 box-sizing 为 border-box，则实际内容的宽高要减去对应的 border 和 padding 值。 
-
-![1525501891969](C:\Users\LIGHTN~1\AppData\Local\Temp\1525501891969.png)
-
-
 
 ### 元素的显示和隐藏
 
@@ -513,6 +624,7 @@ overflow 规定元素溢出父容器时的展现形式，取值有auto, hidden�
 * 对于选择器中给定的各个ID属性值，加`0,1,0,0`
 * 对于选择器中给定的各个类属性值、属性选择或伪类，加`0,0,1,0`
 * 对于选择器中给定的各个元素和伪元素，加`0,0,0,1`
+* 结合符和通配选择器`*`对特殊性没有任何贡献，即`0,0,0,0` (0特殊性)
 
 ```css
 h1 {color: red;} /*0,0,0,1*/
@@ -532,7 +644,21 @@ li#answer {color: navy;} /*0,1,0,1 (winner)*/
 p.dark {color: #333 !important; background: white !important;}
 ```
 
+* 继承的值没有特殊性，甚至不如0特殊性
 
+```css
+* {color: gray;}
+h1#page-title {color: black;}
+```
+
+```html
+<h1 id="page-title">Meerkat <em>Central</em></h1>
+<p>
+	Welcome to the best place on the web for meerkat infomation!
+</p>
+```
+
+↑`em`元素会显示为灰色而不是黑色。
 
 ### 样式的继承与层叠
 
@@ -572,8 +698,34 @@ p em {color: purple;} /*from imported style sheet*/
 p em {color: gray;} /*rule contained within the document (winner)*/
 ```
 
+层叠的规则：
 
+1. 找出所有相关的规则，这些规则都包含与一个给定元素匹配的选择器。。
+2. 按权重和来源对应用到该元素的所有声明排序。
+3. 按特殊性对应用到给定元素的所有声明排序。
+4. 按出现顺序对应用给定元素的所有声明排序。
 
+`inherit`关键字
+
+考虑以下样式和标记：
+
+```css
+#toolbar {background: blue; color: white;}
+```
+
+```html
+<div id="toolbar">
+	<a href="one.html">One</a> | <a href="two.html">Two</a> | 
+    <a href="three.html">Three</a>
+</div>
+```
+↑蓝色背景上是蓝色文本，之间有白色的竖线使其分隔。
+向样式表增加以下规则：
+```css
+#toolbar a {color: inherit;}
+```
+
+↑这会让链接使用继承的`color`值而不是用户代理的默认样式。
 
 
 # Sublime
