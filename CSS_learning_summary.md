@@ -521,7 +521,7 @@ strong {font-size: 135%;}
 
 * text-align 水平对齐
 
-只应用于块级元素。
+只应用于块级元素的内联内容。
 
 `left`: 左对齐
 
@@ -591,11 +591,75 @@ text-shadow: green 5px 0.5em;
 
 * direction 文本方向
 
-
-
 ### 盒模型
 
+![](C:\Users\liao_\Documents\前端学习\front-end-learning\CSS框模型.png)
+
+####水平格式化
+
+margin-left + border-left + padding-left + width(内容) + padding-left + border-right + margin-right = 父元素宽度
+
+7个属性中，只有3个属性可以设置为`auto`: width, margin-left, margin-right。其他元素必须设置为特定的值，不设置就默认是0。
+
+假设7个属性的和必须等于400px：
+
+```css
+p {margin-left: auto; margin-right: 100px; width: 100px;} /*'auto' left margin evaluates to 200px*/
+```
+
+如果3个属性都设置了非auto的某个值，总会把`margin-right`强制为`auto`:
+
+```css
+p {margin-left: 100px; margin-right: 100px; width: 100px;} /*right margin forced to be 200px*/
+```
+
+将某个外边距以及width设置为auto。设置auto的外边距会减为0：
+
+```css
+p {margin-left: auto; margin-right: 100px; width: auto;} /*left margin evaluates to 0*/
+```
+
+如果3个属性都设置了auto：2个外边距都会设置为0，而width会尽可能宽。
+
+将两个外边距设置为相等的长度是将元素居中的一种正确方法。
+
+```css
+p {width: 100px; margin-left: auto; margin-right: auto;}
+```
+
+
+
+padding, border和内容宽度（及高度）绝对不能为负。只有外边距能小于0。
+
 默认情况下，实际内容宽高为设置的width和height，但是如果设置了 box-sizing 为 border-box，则实际内容的宽高要减去对应的 border 和 padding 值。 
+
+#### 替换元素
+
+```css
+<img src="smile.png" style="display: block; width: auto; margin: 0;">
+```
+
+原图像是多宽，元素就多宽。
+
+指定width, height也会随着变化，除非height也被指定。
+
+#### 垂直格式化
+
+一个元素的默认高度由其内容决定。
+
+对任何块级元素可以设置显式高度。
+
+假设指定高度大于显示内容所需的高度，多余的高度看起来好像有额外的内边距一样。
+
+假设高度小于显示内容所需的高度，浏览器会提供某种方法来查看所有内容，如滚动条，具体行为取决于overflow属性的值，而不是增加元素框的高度。
+
+margin-top + border-top + padding-top + height(内容) + padding-bottom + border-bottom + margin-bottom = 父元素高度
+
+7个属性中，只有3个属性可以设置为`auto`: height, margin-top, margin-bottom。其他元素必须设置为特定的值，不设置就默认是0。
+
+**垂直相邻的外边距会被合并。**
+
+负的上外边距会使段落看上去被向上拉；负的下外边距会使段落看上去被向下拉。
 
 ### 元素的显示和隐藏
 
@@ -727,6 +791,68 @@ p em {color: gray;} /*rule contained within the document (winner)*/
 
 ↑这会让链接使用继承的`color`值而不是用户代理的默认样式。
 
+
+
+## 浮动和定位
+
+###浮动
+
+> float
+> 值：left|right|none|inherit
+
+一个元素浮动时，其他内容会“环绕”该元素。
+
+浮动元素周围的外边距不会合并。
+
+如果要浮动一个非替换元素，则必须为该元素声明一个width。否则，根据CSS规范，元素的宽度趋于0.
+
+包含块：浮动元素的包含块是其最近的块级祖先元素。
+如果一个元素向左浮动，而另一个元素已经在那个位置，后放置的元素将挨着前一个浮动元素的右外边界放置。
+####清除
+> clear
+> 值：left|right|both|none|inherit
+
+确保h3元素不会与任何浮动元素在同一行上，要使用值both:
+```css
+h3 {clear: both;}
+​```css
+如果只是不希望h3元素的右边有浮动元素，要使用h3{clear: right;}
+```
+`clear:none`允许元素浮动到另一个元素的任意两边。
+
+### 定位
+
+利用定位，可以准确地定义元素框相对于其正常位置应该出现在哪里，或者相对于父元素、另一个元素甚至浏览器窗口本身的位置。
+
+> position
+>
+> 值：static|relative|absolute|fixed|inherit
+
+元素绝对定位时，会从文档流中完全删除，然后相对于其包含块定位。
+绝对定位元素的包含块是最近的position值不为static的祖先元素。
+如果left,right, top, bottom设置为auto, 会相对于其未定位前本来的顶端位置对齐。
+>z-index
+>值：<integer>|auto|inherit
+
+
+###内容溢出和剪裁
+> overflow
+> 值：visible|hidden|scroll|auto|inherit
+
+>clip
+>值：rect(top, right, bottom, left)|auto|inherit
+>应用于：绝对定位元素
+
+如果一个剪裁矩形涵盖元素左上角20X20像素的一个正方形，可以定义如下：
+```css
+rect(0, 20px, 20px, 0)
+```
+
+###元素可见性
+> visibility
+> 值：visible|hidden|collapse|inherit
+
+如果设置为`visiblity:none`，元素还是会影响文档的布局，也就是说，元素还在那里，只不过你看不见它。注意这与`display:none`的区别。`display:none`的元素不仅不会显示，还会从文档中删除。
 
 # Sublime
 
