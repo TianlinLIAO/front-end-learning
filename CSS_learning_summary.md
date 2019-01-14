@@ -795,7 +795,7 @@ p em {color: gray;} /*rule contained within the document (winner)*/
 
 ## 浮动和定位
 
-###浮动
+### 浮动
 
 > float
 > 值：left|right|none|inherit
@@ -807,8 +807,20 @@ p em {color: gray;} /*rule contained within the document (winner)*/
 如果要浮动一个非替换元素，则必须为该元素声明一个width。否则，根据CSS规范，元素的宽度趋于0.
 
 包含块：浮动元素的包含块是其最近的块级祖先元素。
-如果一个元素向左浮动，而另一个元素已经在那个位置，后放置的元素将挨着前一个浮动元素的右外边界放置。
-####清除
+
+有一系列特定规则控制着浮动元素的摆放：
+
+* 浮动元素的左（右）外边界不能超出其包含块的左（右）内边界。
+* 浮动元素的左（右）外边界必须是源文档中之前出现的左（右）浮动元素的右（左）外边界，除非后出现的浮动元素的顶端在先出现的浮动元素的底端下面。这条规则可以**防止浮动元素彼此“覆盖”**。如果一个元素向左浮动，而另一个元素已经在那个位置，后放置的元素将挨着前一个浮动元素的右外边界放置。
+* 左（右）浮动元素的右（左）外边界不会在其右（左）边右（左）浮动元素的左（右）外边界的右（左）边。
+* 一个浮动元素的顶端不能比其父元素的内顶端更高。如果一个浮动元素在两个合并外边距之间，放置这个浮动元素时就好像在两个元素之间有一个块级父元素。
+* 浮动元素的顶端不能比之前所有浮动元素或块级元素的顶端更高。
+* 如果源文档中一个浮动元素之前出现另一个元素，浮动元素的顶端不能比包含该元素所生成框的任何行框的顶端更高。
+* 左（右）浮动元素的左（右）边右另一个浮动元素，前者的右（左）外边界不能在其包含块的右（左）边界的右（左）边。**如果没有足够的空间，浮动元素会被挤到一个新的“行”上。**
+* 浮动元素必须尽可能高地放置。
+* 左浮动元素必须向左尽可能远，右浮动元素则必须向右尽可能远。
+
+#### 清除
 > clear
 > 值：left|right|both|none|inherit
 
@@ -828,14 +840,55 @@ h3 {clear: both;}
 >
 > 值：static|relative|absolute|fixed|inherit
 
+#### absolute
+
 元素绝对定位时，会从文档流中完全删除，然后相对于其包含块定位。
-绝对定位元素的包含块是最近的position值不为static的祖先元素。
+绝对定位元素的包含块是最近的position值不为static的祖先元素。通常会选择一个元素作为绝对定位元素的包含块，将其position指定为relative而且没有偏移。
 如果left,right, top, bottom设置为auto, 会相对于其未定位前本来的顶端位置对齐。
+
+
+
+外边距为auto可以得到垂直居中的效果。
+
+```html
+<div style="position: relative; width: 10em; height: 10em; border: 1px solid;">
+		<div style="position: absolute; left: 0; width: 100%; background: #ccc; top: 0; height: 5em; bottom: 0; margin: auto 0">
+			element D
+		</div>
+</div>
+```
+
+> z-index
+>
+> 值：<integer> | auto | inherit
+
+#### fixed
+
+固定定位与绝对定位很类似，只不过固定元素的包含块是**视窗**。固定定位时，元素会完全从文档流中去除，不会有相对于文档中任何部分的位置。
+
 >z-index
 >值：<integer>|auto|inherit
 
+#### relative
+
+当元素相对定位时，它会从其正常位置移走。不过原来所占的空间并不会因此消失。
+
+如果遇到过度受限的相对定位，一个值会重置为另一个值得相反数。因此，`bottom`总是等于`-top`。
+
+### 限制宽度和高度
+
+> min-width, min-height, max-width, max-height
+>
+> 值：<length> | <percentage> | inherit
+>
+> 应用于：除了非替换行内元素和表元素以外的所有元素
+>
+> 继承性：无
+>
+> 百分数：相对于包含块的宽度
 
 ###内容溢出和剪裁
+
 > overflow
 > 值：visible|hidden|scroll|auto|inherit
 
@@ -853,6 +906,288 @@ rect(0, 20px, 20px, 0)
 > 值：visible|hidden|collapse|inherit
 
 如果设置为`visiblity:none`，元素还是会影响文档的布局，也就是说，元素还在那里，只不过你看不见它。注意这与`display:none`的区别。`display:none`的元素不仅不会显示，还会从文档中删除。
+
+## 表格
+
+### 表单元格边框
+
+> border-collapse
+>
+> 值：collapse | separate | inherit
+>
+> 初始值：separate
+>
+> 应用于：display值为table或inline-table的元素
+>
+> 继承性：有
+
+> border-spacing
+>
+> 值：<length><length> (第一个值是水平间隔，第二个值是垂直间隔)| inherit
+>
+> 初始值：0
+>
+> 应用于：display值为table或inline-table的元素
+>
+> 继承性：有
+
+如果希望所有单元格都分隔1个像素的距离，声明`border-spacing: 1px;`就足够了。另一方面，如果希望单元格水平间隔1个像素，而垂直间隔5个像素，就要写作`border-spacing: 1px 5px;`。
+
+> empty-cells
+>
+> 值：show | hide | inherit
+>
+> 应用于：display值为table-cell的元素
+>
+> 继承性：有
+
+如果`empty-cells`设置为show，会画出空单元格的边框和背景；如果值为hide，则不会画出该单元格的任何部分。
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<style type="text/css">
+		table { border-collapse: collapse; border: 3px outset gray;}
+		td {border: 1px solid gray; padding: 0.5em;}
+		#r2c1, #r2c2 {border-style: hidden;}
+		#r1c1, #r1c4 {border-width: 5px;}
+		#r2c4 {border-style: double; border-width: 3px;}
+		#r3c4 {border-style: dotted; border-width: 2px;}
+		#r4c1 {border-bottom-style: hidden;}
+		#r4c3 {border-top: 13px solid silver;}
+	</style>
+</head>
+<body>
+	<table>
+		<tr>
+			<td id="r1c1">1-1</td><td id="r1c2">1-2</td><td id="r1c3">1-3</td><td id="r1c4">1-4</td>
+		</tr>
+		<tr>
+			<td id="r2c1">2-1</td><td id="r2c2">2-2</td><td id="r2c3">2-3</td><td id="r2c4">2-4</td>
+		</tr>
+		<tr>
+			<td id="r3c1">3-1</td><td id="r3c2">3-2</td><td id="r3c3">3-3</td><td id="r3c4">3-4</td>
+		</tr>
+		<tr>
+			<td id="r4c1">4-1</td><td id="r4c2">4-2</td><td id="r4c3">4-3</td><td id="r4c4">4-4</td>
+		</tr>
+	</table>
+</body>
+</html>
+```
+
+![](C:\Users\liao_\Documents\前端学习\front-end-learning\Snipaste_2019-01-10_18-49-14.png)
+
+### 表大小
+#### 宽度
+由于有两种不同方法可以得出表的宽度，因此必须有办法声明一个给定表应当使用哪一种方法↓
+
+> table-layout
+>
+> 值：auto | fixed | inherit
+>
+> 初始值：auto
+>
+> 应用于：display值为table或inline-table的元素
+>
+> 继承性：有
+
+##### fixed
+
+布局不依赖表单元格的内容，其布局是根据该表以及表中列和单元格的width值决定的。
+
+所有列宽度都由表的第一行定义。
+
+##### auto
+
+auto比较慢，因为在用户代理查看完表的所有内容之前无法确定表的布局。
+
+### 对齐
+
+水平对齐是`text-align`;
+
+垂直对齐是`vertical-align`: 
+
+* `top`：顶端对齐
+* `bottom`：底端对齐
+* `middle`：居中对齐
+* `baseline`：基线对齐
+
+## 列表与生成内容
+
+### 列表项标志
+
+> list-style-type
+>
+> CSS2.1 值：disc | circle | square | decimal | decimal-leading-zero| lower-roman | upper-roman | lower-greek | lower-latin | upper-latin | armenian | georgian | none | inherit
+>
+> 初始值：disc
+>
+> 应用于：display值为list-item的元素
+>
+> 继承性：有
+
+| 关键字               | 效果                                     |
+| -------------------- | ---------------------------------------- |
+| disc                 | 使用一个实心圆作为列表项标志             |
+| circle               | 使用一个空心圆作为列表项标志             |
+| square               | 使用一个方块（实心或空心）作为列表项标志 |
+| decimal              | 1，2，3，4，5......                      |
+| decimal-leading-zero | 01，02，03 ，04 ，05......               |
+| upper-alpha          | A, B, C, D, E......                      |
+| ......               |                                          |
+
+#### 列表项图像
+
+> list-style-image
+>
+> 值：<uri> | none | inherit
+>
+> 初始值：none
+>
+> 应用于：display值为list-item的元素
+>
+> 继承性：有
+```css
+ul li {list-style-image: url(ohio.gif);}
+```
+
+#### 列表标志位置
+> list-style-position
+>
+> 初始值：outside
+>
+> 应用于：display值为list-item的元素
+>
+> 继承性：有
+
+#### 简写列表样式
+
+> list-style
+>
+> 值：[ <list-style-type> || <list-style-image> || <list-style-position>] | inherit
+>
+> 应用于：display值为list-item的元素
+>
+> 继承性：有
+
+`list-style`的值可以按任何顺序列出，而且这些值都可以忽略。只要提供了一个值，其他的就会填入其默认值。
+
+### 生成内容
+
+#### 插入生成内容
+
+为了向文档中插入生成内容，可以使用：`:before`和`:after`伪元素。
+
+你可能希望所有超链接前面增加前缀文本"(link)"加以标志，从而在打印时更明显。可以用以下规则：
+
+```css
+a[href]:before {content: "(link)";}
+```
+
+在指向PDF文档的链接最后插入一个小图标：
+
+```css
+a.pdf-doc:after {conent: url(pdf-doc-icon.gif);}
+```
+
+禁止浮动或定位`:before`和`:after`内容。
+
+如果`:before`或`:after`选择器的主体是块级元素，则display属性只接受值`none`,`inline`,`block`和`marker`，其他值都处理为`block`。
+
+如果`:before`或`:after`选择器的主体是一个行内元素，属性display只能接受值`none`和`inline`，所有其他值都处理为`inline`。
+
+#### 指定内容
+
+> content
+>
+> 值：normal | [<string> | <uri> | <counter> | attr(<identifier>) | open-quote | close-quote | no-open-quote | no-close-quote] + | inherit
+
+字符串值会原样显示，即使其中包含某种标记也不例外，如`<em>whatever</em>`。如果你希望生成内容中有一个换行，不能直接使用`<br>`，而要使用串`\A`。
+
+有些情况下，你可能想取一个元素的属性值，使之作为文档显示的一部分。如，把每个链接的href属性值放在链接的后面：
+
+```css
+a[href]:after {content: "[" attr(href) "]";}
+```
+
+#### 计数器
+
+设置计数器的起点：
+
+> counter-reset
+>
+> 值：[<identifier> <integer>?]+ | none | inherit 
+
+计数器chapter:
+
+```css
+h1 {counter-reset: chapter;}
+```
+
+计数器默认从0开始。
+
+如果想重置为另一个数:
+
+```css
+h1#ch4 {counter-reset: chapter 4;}
+```
+
+还可以在标识符-整数对中一次重置多个标识符：
+
+```css
+h1 {counter-reset: chapter 4 section -1 subsec figure 1;}
+```
+
+负值是允许的。
+
+指示元素将计数器递增：
+
+> counter-increment
+>
+> 值：[<identifier> <integer>?] + | none | inherit
+
+如果没有设置标识符对应的整数，则默认为1.
+
+```css
+ol {counter-reset: ordered;} /* defaults to 0，然后是从1开始显示 */
+ol li {counter-increment: ordered;} /* defaults to 1 */
+```
+
+任何元素都可以用计数器。
+
+如果希望一个递增计数器第一次显示0，需要将计数器重置为-1，如下：
+
+```css
+body {counter-reset: chapter -1;}
+h1:before {counter-increment:chapter; content: counter(chapter) ". "}
+```
+
+计数器的嵌套：
+```css
+h1:before {counter-reset: section subsec;
+	counter-increment: chapter;
+	countent: counter(chapter) ". ";}
+h2:before {counter-reset:subsec;
+	counter-increment: section;
+	content: counter(chapter)"." counter(section) ". ";}
+h3:before {counter-increment: subsec;
+	content: counter(chapter) "." counter(section) "." counter(subsec) ". ";}
+```
+
+但是如果有很多层嵌套，↑这样写就很麻烦。
+
+如果你希望有序列表这样计数，使每层嵌套都创建一个新计数器追加到老计数器上，如1、1.1、1.2、1.2.1、1.2.2、1.3、2、2.1等。可以利用`counters()`实现。
+
+```css
+ol {counter-reset: ordered;}
+ol li:before {counter-increment: ordered;
+	content: counters(ordered,",") " - ";}
+```
+
+
 
 # Sublime
 
