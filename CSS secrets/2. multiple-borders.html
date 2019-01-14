@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>multiple borders</title>
+	<style type="text/css">
+		.test {
+			width: 400px;
+			height: 300px;
+			margin: 100px;
+		}
+		
+		#test1 {
+			background: yellowgreen;
+			box-shadow: 0 0 0 10px #655, 
+						0 0 0 15px deeppink,
+						0 2px 5px 15px rgba(0,0,0,0.6);
+		}
+
+		/*
+		你可能只需要两层边框， 那就可以先设置一层常规边框， 再加上 outline（ 描边） 属性来产生外层的边框。 
+		 */
+		#test2 {
+			background: yellowgreen;
+			border: 10px solid #655;
+			outline: 5px solid deeppink;
+		}
+
+		/*
+		对一层 dashed（虚线）描边使用负的 outline-offset后，可以得到简单的缝边效果
+		 */
+		#test3 {
+			background: black;
+			border-radius: 25px;
+			outline: 2px dashed white;
+			outline-offset: -30px;
+		}
+	</style>
+</head>
+<body>
+	<div id="parent">
+		<div id="test1" class="test"></div>
+		<div id="test2" class="test"></div>
+		<div id="test3" class="test"></div>
+	</div>
+</body>
+</html>
