@@ -593,9 +593,7 @@ text-shadow: green 5px 0.5em;
 
 ### 盒模型
 
-![](C:\Users\liao_\Documents\前端学习\front-end-learning\CSS框模型.png)
-
-####水平格式化
+#### 水平格式化
 
 margin-left + border-left + padding-left + width(内容) + padding-left + border-right + margin-right = 父元素宽度
 
@@ -901,7 +899,7 @@ h3 {clear: both;}
 rect(0, 20px, 20px, 0)
 ```
 
-###元素可见性
+### 元素可见性
 > visibility
 > 值：visible|hidden|collapse|inherit
 
